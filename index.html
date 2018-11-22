@@ -6,6 +6,9 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
   <link rel="stylesheet" href="css/bulma.css"/>
+  <style>
+    .margin-right { margin-right: 10px; }
+  </style>
 </head>
 <body>
   <section class="section">
@@ -14,12 +17,156 @@
         <div class="container">
           <h1 class="title">Métodos de Integración</h1>
         </div>
-      </div>
+     </div>
     </div>
   </section>
   <main class="section">
-
+    <div class="columns is-centered">
+      <div class="column is-6-desktop is-8-tablet is-12-mobile">
+        <div class="card">
+          <div class="card-header">
+            <!-- <div class="card-header">
+            <div class="card-header-title">
+              <p class="title">Metodós de Integración</p>
+            </div>
+          </div> -->
+        </div>
+        <div  id="app" class="card-content">
+          <div class="tabs is-centered">
+            <ul>
+              <li :class="{ 'is-active': tab == 1 }" @click="tab = 1"><a>Trapecio</a></li>
+              <li :class="{ 'is-active': tab == 2 }" @click="tab = 2"><a>Simposon ⅓</a></li>
+            </ul>
+          </div>
+          <div class="field is-grouped is-grouped-centered">
+            <div class="field has-addons margin-right">
+              <p class="control">
+                <a class="button is-static"><i>a</i></a>
+              </p>
+              <p class="control">
+                <input class="input" type="number" v-model="a">
+              </p>
+            </div>
+            <div class="field has-addons margin-right">
+              <p class="control">
+                <a class="button is-static"><i>b</i></a>
+              </p>
+              <p class="control">
+                <input class="input" type="number" v-model="b">
+              </p>
+            </div>
+            <div class="field has-addons margin-right">
+              <p class="control">
+                <a class="button is-static"><i>n</i></a>
+              </p>
+              <p class="control">
+                <input class="input" type="number" v-model="n">
+              </p>
+            </div>
+            <p class="control">
+              <a class="button is-primary" @click="generate">
+                Generar
+              </a>
+            </p>
+          </div>
+          <hr>
+          <div class="field is-grouped is-grouped-centered" v-for="(item, index) in xs">
+            <p class="control">
+              <input class="input" type="number" v-model="xs[index]" readonly>
+            </p>
+            <p class="control">
+              <input class="input" type="number" v-model="fx[index]">
+            </p>
+          </div>
+          <div class="field is-grouped is-grouped-right" :class="{ 'is-hidden': hideBtn }">
+            <p class="control">
+              <div class="field has-addons margin-right">
+                <p class="control">
+                  <a class="button is-static"><i>Resultado</i></a>
+                </p>
+                <p class="control">
+                  <input class="input" type="number" v-model="result" readonly>
+                </p>
+              </div>
+              <button class="button is-success" :value="tab" @click="calculate">Calcular</button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>       
   </main>
+  <footer class="footer">
+      <nav class="level">
+        <div class="level-item has-text-centered">
+          <p><strong>Paulina Alejandra Alfaro Vazquez</strong></p>
+        </div>
+        <div class="level-item has-text-centered">
+          <p><strong>Daniel Ulises Mendoza Garcia</strong></p>
+        </div>
+        <div class="level-item has-text-centered">
+          <p><strong>Carlos Francisco Rodriguez Aguilar</strong></p>
+        </div>
+      </nav>
+      <div class="content has-text-centered">
+        <p>
+          <strong>Metodos Numericos</strong>, <a>Ingenieria de Software</a>. Facultad de Telematica.
+        </p>
+      </div>
+    </footer>
 </body>
 </html>
+<script src="js/vue.min.js"></script>
 <script src="js/methods.js"></script>
+<script>
+  const vm = new Vue({
+    el: '#app',
+    data: {
+      xs: [],
+      fx: [],
+      a: '',
+      b: '',
+      n: '',
+      tab: 1,
+      hideBtn: true,
+      result: ''
+    },
+    methods: {
+      generate() {
+        let a = Number(this.a);
+        let b = Number(this.b);
+        let n = Number(this.n);
+        
+        console.log(a,b,n);
+        const increment = step(a, b, n);
+        
+        if (increment !== -1) {
+          let x = xs(a, b, increment);
+          this.fx = new Array(x.length).fill('');
+          this.xs = x;
+          this.hideBtn = false;
+        }
+        else
+          alert("'b' debe ser mayor 'a' y 'n' mayor a 0")
+      },
+      calculate() {
+        let a = Number(this.a);
+        let b = Number(this.b);
+        let n = Number(this.n);
+
+        if (this.tab == 1) {
+          let res = trapecio(this.fx, a, b, n);
+          if (res !== -1)
+            this.result = res.toFixed(4);
+          else
+            alert('Valores invalidos')
+        } else if (this.tab == 2) {
+          let res = simpson13(this.fx, a, b, n);
+          if (res !== -1)
+            this.result = res.toFixed(4);
+          else
+            alert('Valores invalidos')
+        }
+      }
+    } 
+  })
+</script>
